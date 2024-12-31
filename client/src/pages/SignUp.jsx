@@ -14,8 +14,8 @@ export default function SignUp() {
     e.preventDefault();
 
     try {
-      setLoading(true);
       setError(false); // other wise we will have the error from the previos try
+      setLoading(true);
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
