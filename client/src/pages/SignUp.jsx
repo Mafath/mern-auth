@@ -26,7 +26,7 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      console.log(data); // errors nttn output ek :- message: "User created successfully" / error thibboth output ek :- middleware eke tyn eka
+      // console.log(data); // errors nttn output ek :- message: "User created successfully" / error thibboth output ek :- middleware eke tyn eka
       setLoading(false);
       if (data.success === false) {
         setError(true);

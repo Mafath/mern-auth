@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function SignIn() {
 
-  const [formData, setFormData] = useState({});
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({}); //state.slice name
+  const {loading, error} = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,8 +19,7 @@ export default function SignIn() {
     e.preventDefault();
 
     try {
-      setError(false); // other wise we will have the error from the previos try
-      setLoading(true);
+      dispatch(signInStart());
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -28,15 +29,14 @@ export default function SignIn() {
       });
       const data = await res.json();
       // console.log(data); // errors nttn output ek :- message: "User created successfully" / error thibboth output ek :- middleware eke tyn eka
-      setLoading(false);
       if (data.success === false) {
-        setError(true);
+        dispatch(signInFailure(data.message));
         return;
       }
+      dispatch(signInSuccess(data));
       navigate('/');
     } catch (error) {
-      setLoading(false);
-      setError(true);
+      dispatch(signInFailure(error.message));
     }
 
   };
@@ -61,7 +61,7 @@ export default function SignIn() {
           <span className='text-blue-700'>Sign up</span>
         </Link>
       </div>
-      <p className='text-red-700 mt-5'>{error && 'Something went wrong!'}</p>
+      <p className='text-red-700 mt-5'>{error ? error || 'Something went wrong!' : ''}</p>
       {/* {error && <p className='text-red-500 mt-5'>{error}</p>} */}
     </div>
   );
